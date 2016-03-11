@@ -31,6 +31,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/photo_background_protection"
+                android:transitionName="@string/transition_image"
                 app:layout_collapseMode="parallax" />
 
             <!--Note that toolbar needs to be match parent for both width and height because it's w&h is the same as that of the image view-->
