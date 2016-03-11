@@ -5,18 +5,22 @@
     android:id="@+id/draw_insets_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:elevation="8dp">
+        android:elevation="8dp"
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/photo_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/photo_placeholder"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
             app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -34,10 +38,11 @@
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                tools:targetApi="lollipop">
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                tools:targetApi="lollipop" />
 
 
-            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -49,7 +54,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="UnusedAttribute">
 
-        <com.example.xyzreader.ui.MaxWidthLinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -104,7 +109,7 @@
                 android:textColorLink="@color/colorAccent"
                 android:textSize="@dimen/detail_body_text_size" />
 
-        </com.example.xyzreader.ui.MaxWidthLinearLayout>
+        </LinearLayout>
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
