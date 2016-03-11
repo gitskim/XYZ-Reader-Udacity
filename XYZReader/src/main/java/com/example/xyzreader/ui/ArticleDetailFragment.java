@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -46,16 +46,17 @@ public class ArticleDetailFragment extends Fragment implements
     private long mItemId;
     private View mRootView;
     private int mMutedColor = 0xFF333333;
-    private ObservableScrollView mScrollView;
+    private ScrollView mScrollView;
     private CoordinatorLayout mCoordinatorLayout;
     private ColorDrawable mStatusBarColorDrawable;
 
     private int mTopInset;
     private View mPhotoContainerView;
-    private Toolbar mToolbarPhotoView;
+    private Toolbar mToolbar;
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+    private ImageView mToolbarImageView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -114,18 +115,19 @@ public class ArticleDetailFragment extends Fragment implements
 //            }
 //        });
 
-        mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
-        mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
-            @Override
-            public void onScrollChanged() {
-                mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
+        mScrollView = (ScrollView) mRootView.findViewById(R.id.scrollview);
+//        mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
+//            @Override
+//            public void onScrollChanged() {
+//                mScrollY = mScrollView.getScrollY();
+//                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
+//                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
 //                updateStatusBar();
-            }
-        });
+//            }
+//        });
 
-        mToolbarPhotoView = (Toolbar) mRootView.findViewById(R.id.photo);
+        mToolbar = (Toolbar) mRootView.findViewById(R.id.photo);
+        mToolbarImageView = (ImageView) mRootView.findViewById(R.id.toolbar_image);
         mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
@@ -147,7 +149,7 @@ public class ArticleDetailFragment extends Fragment implements
 
 //    private void updateStatusBar() {
 //        int color = 0;
-//        if (mToolbarPhotoView != null && mTopInset != 0 && mScrollY > 0) {
+//        if (mToolbar != null && mTopInset != 0 && mScrollY > 0) {
 //            float f = progress(mScrollY,
 //                    mStatusBarFullOpacityBottom - mTopInset * 3,
 //                    mStatusBarFullOpacityBottom - mTopInset);
@@ -208,7 +210,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 Palette p = Palette.generate(bitmap, 12);
                                 mMutedColor = p.getDarkMutedColor(0xFF333333);
                                 BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-                                mToolbarPhotoView.setBackground(bitmapDrawable);
+                                mToolbarImageView.setBackground(bitmapDrawable);
                                 mRootView.findViewById(R.id.meta_bar)
                                         .setBackgroundColor(mMutedColor);
 //                                updateStatusBar();
@@ -259,13 +261,13 @@ public class ArticleDetailFragment extends Fragment implements
     }
 
     public int getUpButtonFloor() {
-        if (mPhotoContainerView == null || mToolbarPhotoView.getHeight() == 0) {
+        if (mPhotoContainerView == null || mToolbar.getHeight() == 0) {
             return Integer.MAX_VALUE;
         }
 
         // account for parallax
         return mIsCard
-                ? (int) mPhotoContainerView.getTranslationY() + mToolbarPhotoView.getHeight() - mScrollY
-                : mToolbarPhotoView.getHeight() - mScrollY;
+                ? (int) mPhotoContainerView.getTranslationY() + mToolbar.getHeight() - mScrollY
+                : mToolbar.getHeight() - mScrollY;
     }
 }
