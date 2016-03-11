@@ -23,12 +23,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme">
+        <item name="android:windowExitTransition" tools:ignore="NewApi">@transition/grid_exit</item>
     </style>
 
     <style name="AppTheme.Detail">
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent
         </item>
-        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
