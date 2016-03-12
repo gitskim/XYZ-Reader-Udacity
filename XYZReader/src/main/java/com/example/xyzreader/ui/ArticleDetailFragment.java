@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
@@ -49,7 +50,7 @@ public class ArticleDetailFragment extends Fragment implements
     private ScrollView mScrollView;
     private CoordinatorLayout mCoordinatorLayout;
     private ColorDrawable mStatusBarColorDrawable;
-
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private int mTopInset;
     private View mPhotoContainerView;
     private Toolbar mToolbar;
@@ -57,6 +58,7 @@ public class ArticleDetailFragment extends Fragment implements
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
     private ImageView mToolbarImageView;
+    private String mTitle;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -108,6 +110,7 @@ public class ArticleDetailFragment extends Fragment implements
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         mCoordinatorLayout = (CoordinatorLayout)
                 mRootView.findViewById(R.id.draw_insets_frame_layout);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.collapsing_toolbar_layout);
 //        mCoordinatorLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
 //            @Override
 //            public void onInsetsChanged(Rect insets) {
@@ -191,7 +194,9 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.setAlpha(0);
             mRootView.setVisibility(View.VISIBLE);
             mRootView.animate().alpha(1);
-            titleView.setText(mCursor.getString(ArticleLoader.Query.TITLE));
+            mTitle = mCursor.getString(ArticleLoader.Query.TITLE);
+            titleView.setText(mTitle);
+            mCollapsingToolbarLayout.setTitle(mTitle);
             bylineView.setText(Html.fromHtml(
                     DateUtils.getRelativeTimeSpanString(
                             mCursor.getLong(ArticleLoader.Query.PUBLISHED_DATE),
