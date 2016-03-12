@@ -104,7 +104,7 @@ public class ArticleDetailFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
         mCoordinatorLayout = (CoordinatorLayout)
                 mRootView.findViewById(R.id.draw_insets_frame_layout);
@@ -201,33 +201,31 @@ public class ArticleDetailFragment extends Fragment implements
                             + mCursor.getString(ArticleLoader.Query.AUTHOR)
                             + "</font>"));
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY)));
-            if (getActivity() != null) {
-                ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-                        .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
-                            @Override
-                            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                                Bitmap bitmap = imageContainer.getBitmap();
-                                if (bitmap != null) {
-                                    Palette p = Palette.generate(bitmap, 12);
-                                    mMutedColor = p.getDarkMutedColor(0xFF333333);
-                                    BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-                                    mToolbarImageView.setBackground(bitmapDrawable);
-                                    mRootView.findViewById(R.id.meta_bar)
-                                            .setBackgroundColor(mMutedColor);
+            ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
+                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            Bitmap bitmap = imageContainer.getBitmap();
+                            if (bitmap != null) {
+                                Palette p = Palette.generate(bitmap, 12);
+                                mMutedColor = p.getDarkMutedColor(0xFF333333);
+                                BitmapDrawable bitmapDrawable = new BitmapDrawable(ArticleDetailFragment.this.getResources(), bitmap);
+                                mToolbarImageView.setBackground(bitmapDrawable);
+                                mRootView.findViewById(R.id.meta_bar)
+                                        .setBackgroundColor(mMutedColor);
 //                                updateStatusBar();
-                                }
                             }
+                        }
 
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
 
-                            }
-                        });
-            }
+                        }
+                    });
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
-            bylineView.setText("N/A" );
+            bylineView.setText("N/A");
             bodyView.setText("N/A");
         }
     }

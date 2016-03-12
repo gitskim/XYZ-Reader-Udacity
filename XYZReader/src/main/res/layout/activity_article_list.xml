@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/toolbar_container"
+        android:id="@+id/toolbar_container_appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:background="?attr/colorPrimary"
