@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ShareCompat;
@@ -51,8 +52,9 @@ public class ArticleDetailFragment extends Fragment implements
     private CoordinatorLayout mCoordinatorLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private AppBarLayout mAppBarLayout;
     private int mTopInset;
-    private View mPhotoContainerView;
+    private AppBarLayout mPhotoContainerView;
     private Toolbar mToolbar;
     private int mScrollY;
     private boolean mIsCard = false;
@@ -131,7 +133,7 @@ public class ArticleDetailFragment extends Fragment implements
 
         mToolbar = (Toolbar) mRootView.findViewById(R.id.photo);
         mToolbarImageView = (ImageView) mRootView.findViewById(R.id.toolbar_image);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
+        mPhotoContainerView = (AppBarLayout) mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
@@ -186,7 +188,6 @@ public class ArticleDetailFragment extends Fragment implements
 
         TextView titleView = (TextView) mRootView.findViewById(R.id.article_title);
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
-        bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
         bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
@@ -196,15 +197,36 @@ public class ArticleDetailFragment extends Fragment implements
             mRootView.animate().alpha(1);
             mTitle = mCursor.getString(ArticleLoader.Query.TITLE);
             titleView.setText(mTitle);
-            mCollapsingToolbarLayout.setTitle(mTitle);
+
+            mPhotoContainerView.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                int scrollRange = -1;
+                boolean isShow = false;
+
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.getTotalScrollRange();
+                    }
+                    Log.d(TAG, "hola scroll range:" + scrollRange + " total scroll range: " + appBarLayout.getTotalScrollRange() +
+                            " vertical offset: " + verticalOffset);
+                    if (scrollRange + verticalOffset == 0) {
+                        mCollapsingToolbarLayout.setTitle(mTitle);
+                        isShow = true;
+                    } else if (isShow) {
+                        mCollapsingToolbarLayout.setTitle("");
+                        isShow = false;
+                    }
+                }
+            });
             bylineView.setText(Html.fromHtml(
                     DateUtils.getRelativeTimeSpanString(
                             mCursor.getLong(ArticleLoader.Query.PUBLISHED_DATE),
                             System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
                             DateUtils.FORMAT_ABBREV_ALL).toString()
-                            + " by <font color='#ffffff'>"
+                            + " by "
                             + mCursor.getString(ArticleLoader.Query.AUTHOR)
                             + "</font>"));
+
             bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY)));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
